@@ -86,6 +86,7 @@ endif # CHECKTESTDATA_ENABLED
 
 install-domserver:
 	$(INSTALL_PROG) -t $(DESTDIR)$(domserver_bindir) balloons
+	$(INSTALL_PROG) -t $(DESTDIR)$(domserver_bindir) lookupteambyip
 
 install-judgehost:
 	$(INSTALL_PROG) -t $(DESTDIR)$(judgehost_bindir) dj_make_*chroot

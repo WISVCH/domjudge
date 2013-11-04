@@ -1,0 +1,42 @@
+#!/usr/bin/php
+<?php
+require_once('/opt/domjudge/domserver/etc/domserver-static.php');
+require_once(ETCDIR . '/domserver-config.php');
+
+if ( ! defined('NONINTERACTIVE') ) define('NONINTERACTIVE', true);
+
+if( DEBUG & DEBUG_TIMINGS ) {
+	require_once(LIBDIR . '/lib.timer.php');
+}
+
+require_once(LIBDIR . '/lib.error.php');
+require_once(LIBDIR . '/lib.misc.php');
+require_once(LIBDIR . '/lib.dbconfig.php');
+require_once(LIBDIR . '/use_db.php');
+
+set_exception_handler('exception_handler');
+setup_database_connection();
+
+$host = $argv[1];
+$ip = gethostbyname($host);
+if ($ip == $host && filter_var($ip, FILTER_VALIDATE_IP)) {
+	$host = gethostbyaddr($ip);
+}
+
+$res = $DB->q('SELECT t.name,t.room FROM team t WHERE t.hostname = %s OR t.hostname = %s', $ip, $host);
+$row = $res->next();
+
+$row['name'] = preg_replace('/[^a-zA-Z0-9 ]+/', '', $row['name'], -1);
+
+if ($row['name'] != '' && $row['room'] != '') {
+	printf('%s (%s)', $row['name'], $row['room']);
+}
+elseif ($row['name'] != '') {
+	print $row['name'];
+}
+elseif ($host == 'localhost') {
+	print('CHipCie/TechNICie');
+}
+else {
+	printf('UNKNOWN <%s>', $host);
+}
