@@ -22,7 +22,7 @@ require_once("common-config.php");
 //   can be useful e.g. for a demo or testing environment. Define
 //   FIXED_TEAM to the team user to be used, e.g.:
 //   define('FIXED_TEAM', 'domjudge');
-define('AUTH_METHOD', 'PHP_SESSIONS');
+define('AUTH_METHOD', 'IPADDRESS');
 
 // Strict checking of team's IP addresses (when using the IPADDRESS
 // authentication method).
@@ -32,7 +32,7 @@ define('AUTH_METHOD', 'PHP_SESSIONS');
 // The 'false' setting allows automatic updating of IP addresses during
 // submission of teams that have their address unset. Otherwise these
 // addresses have to be configured beforehand.
-define('STRICTIPCHECK', false);
+define('STRICTIPCHECK', true);
 
 // List of LDAP servers (space separated) to query when using the LDAP
 // authentication method. Secondly, DN to search in, where '&' will be
@@ -42,7 +42,7 @@ define('LDAP_DNQUERY', 'CN=&,OU=users,DC=example,DC=com');
 
 // Specify here which of the users in htpasswd-jury should have admin 
 // rights on top of their jury rights
-$DOMJUDGE_ADMINS = array('domjudge_jury', 'admin');
+$DOMJUDGE_ADMINS = array('technicie');
 
 // List of auto-detected language extensions by the submit client.
 //   Format: 'LANG,MAINEXT[,EXT]... [LANG...]' where:
@@ -56,5 +56,5 @@ define('LANG_EXTS', 'C,c C++,cpp,cc,c++ C++11,cxx Java,java');
 // Set this to a notification command, which receives the notification
 // text on stdin. Examples below for notification by mail or prints.
 //define('BALLOON_CMD', 'mail -s Balloon_notification domjudge@localhost');
-//define('BALLOON_CMD', 'lpr');
-define('BALLOON_CMD', '');
+define('BALLOON_CMD', 'lpr');
+//define('BALLOON_CMD', '');
