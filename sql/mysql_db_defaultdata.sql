@@ -34,20 +34,8 @@ INSERT INTO `configuration` (`name`, `value`, `type`, `description`) VALUES ('ti
 
 INSERT INTO `language` (`langid`, `name`, `allow_submit`, `allow_judge`, `time_factor`) VALUES ('c', 'C', 1, 1, 1);
 INSERT INTO `language` (`langid`, `name`, `allow_submit`, `allow_judge`, `time_factor`) VALUES ('cpp', 'C++', 1, 1, 1);
+INSERT INTO `language` (`langid`, `name`, `allow_submit`, `allow_judge`, `time_factor`) VALUES ('cxx', 'C++11', 1, 1, 1);
 INSERT INTO `language` (`langid`, `name`, `allow_submit`, `allow_judge`, `time_factor`) VALUES ('java', 'Java', 1, 1, 1.5);
-INSERT INTO `language` (`langid`, `name`, `allow_submit`, `allow_judge`, `time_factor`) VALUES ('pas', 'Pascal', 0, 1, 1);
-INSERT INTO `language` (`langid`, `name`, `allow_submit`, `allow_judge`, `time_factor`) VALUES ('hs', 'Haskell', 0, 1, 2);
-INSERT INTO `language` (`langid`, `name`, `allow_submit`, `allow_judge`, `time_factor`) VALUES ('pl', 'Perl', 0, 1, 1);
-INSERT INTO `language` (`langid`, `name`, `allow_submit`, `allow_judge`, `time_factor`) VALUES ('sh', 'POSIX shell', 0, 1, 1);
-INSERT INTO `language` (`langid`, `name`, `allow_submit`, `allow_judge`, `time_factor`) VALUES ('bash', 'Bash shell', 0, 1, 1);
-INSERT INTO `language` (`langid`, `name`, `allow_submit`, `allow_judge`, `time_factor`) VALUES ('csharp', 'C#', 0, 1, 1);
-INSERT INTO `language` (`langid`, `name`, `allow_submit`, `allow_judge`, `time_factor`) VALUES ('awk', 'AWK', 0, 1, 1);
-INSERT INTO `language` (`langid`, `name`, `allow_submit`, `allow_judge`, `time_factor`) VALUES ('py2', 'Python 2', 0, 1, 1);
-INSERT INTO `language` (`langid`, `name`, `allow_submit`, `allow_judge`, `time_factor`) VALUES ('py3', 'Python 3', 0, 1, 1);
-INSERT INTO `language` (`langid`, `name`, `allow_submit`, `allow_judge`, `time_factor`) VALUES ('adb',    'Ada',     0, 1, 1);
-INSERT INTO `language` (`langid`, `name`, `allow_submit`, `allow_judge`, `time_factor`) VALUES ('f95',    'Fortran', 0, 1, 1);
-INSERT INTO `language` (`langid`, `name`, `allow_submit`, `allow_judge`, `time_factor`) VALUES ('scala',  'Scala',   0, 1, 1.5);
-INSERT INTO `language` (`langid`, `name`, `allow_submit`, `allow_judge`, `time_factor`) VALUES ('lua',    'Lua',     0, 1, 1);
 
 -- 
 -- Dumping data for table `team_category`
