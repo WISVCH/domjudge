@@ -9,8 +9,8 @@
 # values and modify the last list to execute the correct main submit
 # program.
 
-SUBMITSERVER="localhost"
-SUBMITBASEURL="http://localhost/domjudge/"
+SUBMITSERVER="chipcieserver"
+SUBMITBASEURL="http://chipcieserver/"
 
 export SUBMITSERVER SUBMITBASEURL
 
