@@ -11,13 +11,13 @@
 
 # Using HTTP:
 
-#NameVirtualHost *
-#<VirtualHost *>
-#ServerName _default_
-#DocumentRoot @domserver_wwwdir@
-#RedirectMatch ^/api$ /api/
-#Alias /api @domserver_wwwdir@/api/index.php
-#</VirtualHost>
+NameVirtualHost *
+<VirtualHost *>
+ServerName _default_
+DocumentRoot @domserver_wwwdir@
+RedirectMatch ^/api$ /api/
+Alias /api @domserver_wwwdir@/api/index.php
+</VirtualHost>
 
 # Alternatively, use HTTPS and redirect HTTP to HTTPS:
 
@@ -58,13 +58,10 @@ Alias /domjudge @domserver_wwwdir@
 <Directory @domserver_wwwdir@>
 <IfModule !mod_authz_core.c>
 # For Apache 2.2:
-Order allow,deny
-Allow from all
-</IfModule>
-<IfModule mod_authz_core.c>
-# For Apache 2.4:
-Require all granted
-</IfModule>
+#Order allow,deny
+#Allow from all
+# For Apache 2.4 use the following instead:
+ Require all granted
 
 Options FollowSymlinks
 DirectoryIndex index.php
