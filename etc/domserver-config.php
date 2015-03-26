@@ -26,7 +26,7 @@ require_once("common-config.php");
 //   can be useful e.g. for a demo or testing environment. Define
 //   FIXED_USER to the user to be used, e.g.:
 //   define('FIXED_USER', 'domjudge');
-define('AUTH_METHOD', 'PHP_SESSIONS');
+define('AUTH_METHOD', 'IPADDRESS');
 
 // List of LDAP servers (space separated) to query when using the LDAP
 // authentication method. Secondly, DN to search in, where '&' will be
