@@ -940,6 +940,25 @@ $exArgs = array(array('country' => 'NLD'));
 $api->provideFunction('GET', 'affiliations', $doc, $optArgs, $exArgs);
 
 /**
+ * Get team name by ip
+ */
+function team($args)
+{
+	global $DB, $api;
+
+	if(!isset($args['ip'])) {
+		$api->createError('ip argument is required.');
+	}
+
+	$query = 'SELECT t.name FROM team t LEFT JOIN `user` u USING(teamid) WHERE u.ip_address = %s';
+	return $DB->q('maybevalue', $query, $args['ip']);
+}
+$doc = 'Get the name of a team based on the IP address.';
+$optArgs = array('ip' => 'IPv4 address of the team pc.');
+$exArgs = array();
+$api->provideFunction('GET', 'team', $doc, $optArgs, $exArgs);
+
+/**
  * Team information
  */
 function teams($args)

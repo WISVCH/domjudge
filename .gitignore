@@ -10,3 +10,6 @@
 /cov-int
 /domjudge-scan.tar.xz
 *.o
+*.iml
+.idea/
+/out/
