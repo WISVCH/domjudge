@@ -13,7 +13,7 @@ $ip_fp = fopen(ETCDIR . "/computers.csv", "a+");
 $ip_contents = fread($ip_fp, filesize(ETCDIR . "/computers.csv"));
 $ip = $_SERVER['REMOTE_ADDR'];
 
-if(strstr($ip_contents, $ip) === FALSE) {
+if(strstr($ip_contents, $ip."\t") === FALSE) {
 	if(isset($_POST['submit'])) {
 		fwrite($ip_fp, $ip . "\t" . $_POST['comp_name'] . "\n");
 	}
