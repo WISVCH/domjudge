@@ -871,8 +871,8 @@ function team($args)
 		$api->createError('ip argument is required.');
 	}
 
-	$query = 'SELECT t.name FROM team t LEFT JOIN `user` u USING(teamid) WHERE u.ip_address = %s';
-	return $DB->q('maybevalue', $query, $args['ip']);
+	$query = 'maybevalue SELECT t.name FROM team t LEFT JOIN `user` u USING(teamid) WHERE u.ip_address = %s';
+	return $DB->q($query, $args['ip']);
 }
 $doc = 'Get the name of a team based on the IP address.';
 $optArgs = array('ip' => 'IPv4 address of the team pc.');
