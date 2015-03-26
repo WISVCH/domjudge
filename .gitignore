@@ -10,3 +10,6 @@
 /cov-int
 /domjudge-scan.tgz
 *.o
+*.iml
+.idea/
+/out/
