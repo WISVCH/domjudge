@@ -15,7 +15,7 @@ $ip = $_SERVER['REMOTE_ADDR'];
 
 if(strstr($ip_contents, $ip) === FALSE) {
 	if(isset($_POST['submit'])) {
-		fwrite($ip_fp, $ip . "\t" . $_POST['comp_name']);
+		fwrite($ip_fp, $ip . "\t" . $_POST['comp_name'] . "\n");
 	}
 	else {
 		?>
