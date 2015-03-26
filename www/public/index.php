@@ -23,10 +23,11 @@ if(strstr($ip_contents, $ip) === FALSE) {
 			Computer name: <input type="text" name="comp_name"/><br />
 			<input type="submit" name="submit" value="Save"/>
 		</form>
-		<?
+		<?php
 		exit();
 	}
 }
+fclose($ip_fp);
 
 
 $title="Scoreboard";
