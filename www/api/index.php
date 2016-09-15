@@ -37,9 +37,17 @@ function safe_int($value)
 	return is_null($value) ? null : (int)$value;
 }
 
-function safe_float($value)
+function safe_float($value, $decimals = null)
 {
-	return is_null($value) ? null : (float)$value;
+	if ( is_null($value) ) return null;
+	if ( is_null($decimals) ) return (float)$value;
+
+	// Truncate the string version to a specified number of decimals,
+	// since PHP floats seem not very reliable in not giving e.g.
+	// 1.9999 instead of 2.0.
+	$decpos = strpos((string)$value, '.');
+	if ( $decpos===FALSE ) return (float)$value;
+	return (float)substr((string)$value, 0, $decpos+$decimals+1);
 }
 
 function safe_bool($value)
@@ -84,11 +92,11 @@ function contest()
 		'id'        => safe_int($cid),
 		'shortname' => $cdata['shortname'],
 		'name'      => $cdata['name'],
-		'start'     => safe_float($cdata['starttime']),
-		'freeze'    => safe_float($cdata['freezetime']),
-		'end'       => safe_float($cdata['endtime']),
-		'length'    => safe_float($cdata['endtime'] - $cdata['starttime']),
-		'unfreeze'  => safe_float($cdata['unfreezetime']),
+		'start'     => safe_float($cdata['starttime'],3),
+		'freeze'    => safe_float($cdata['freezetime'],3),
+		'end'       => safe_float($cdata['endtime'],3),
+		'length'    => safe_float($cdata['endtime'] - $cdata['starttime'],3),
+		'unfreeze'  => safe_float($cdata['unfreezetime'],3),
 		'penalty'   => safe_int(60*dbconfig_get('penalty_time', 20)),
 		);
 }
@@ -115,11 +123,11 @@ function contests()
 			'id'        => safe_int($cdata['cid']),
 			'shortname' => $cdata['shortname'],
 			'name'      => $cdata['name'],
-			'start'     => safe_float($cdata['starttime']),
-			'freeze'    => safe_float($cdata['freezetime']),
-			'end'       => safe_float($cdata['endtime']),
-			'length'    => safe_float($cdata['endtime'] - $cdata['starttime']),
-			'unfreeze'  => safe_float($cdata['unfreezetime']),
+			'start'     => safe_float($cdata['starttime'],3),
+			'freeze'    => safe_float($cdata['freezetime'],3),
+			'end'       => safe_float($cdata['endtime'],3),
+			'length'    => safe_float($cdata['endtime'] - $cdata['starttime'],3),
+			'unfreeze'  => safe_float($cdata['unfreezetime'],3),
 			'penalty'   => safe_int(60 * dbconfig_get('penalty_time', 20)),
 		);
 	}, $cdatas);
@@ -154,14 +162,24 @@ $api->provideFunction('GET', 'user', $doc);
  */
 function problems($args)
 {
-	global $DB;
+	global $DB, $cdatas, $userdata;
 
 	checkargs($args, array('cid'));
+	$cid = safe_int($args['cid']);
 
-	$pdatas = $DB->q('TABLE SELECT probid AS id, shortname AS label, shortname, name, color
-	                  FROM problem
-	                  INNER JOIN contestproblem USING (probid)
-	                  WHERE cid = %i AND allow_submit = 1 ORDER BY probid', $args['cid']);
+	// Check that user has access to the problems in this contest:
+	if ( checkrole('team') ) $cdatas = getCurContests(TRUE, $userdata['teamid']);
+	if ( checkrole('jury') ||
+	     (isset($cdatas[$cid]) && difftime(now(), $cdatas[$cid]['starttime'])>=0) ) {
+
+		$pdatas = $DB->q('TABLE SELECT probid AS id, shortname AS label, shortname, name, color
+		                  FROM problem
+		                  INNER JOIN contestproblem USING (probid)
+		                  WHERE cid = %i AND allow_submit = 1 ORDER BY probid', $cid);
+	} else {
+		$pdatas = array();
+	}
+
 	return array_map(function($pdata) {
 		return array(
 			'id'        => safe_int($pdata['id']),
@@ -172,7 +190,7 @@ function problems($args)
 		);
 	}, $pdatas);
 }
-$doc = "Get a list of problems in a contest, with for each problem: id, shortname, name and color.";
+$doc = "Get a list of problems in a contest, with for each problem: id, shortname, name and colour.";
 $args = array('cid' => 'Contest ID.');
 $exArgs = array(array('cid' => 2));
 $api->provideFunction('GET', 'problems', $doc, $args, $exArgs);
@@ -220,7 +238,7 @@ function judgings($args)
 		$res[] = array('id'         => safe_int($row['judgingid']),
 		               'submission' => safe_int($row['submitid']),
 		               'outcome'    => $data['result'],
-		               'time'       => safe_float($row['eventtime']));
+		               'time'       => safe_float($row['eventtime'],3));
 	}
 	return $res;
 }
@@ -666,7 +684,7 @@ function submissions($args)
 			'team'      => safe_int($row['teamid']),
 			'problem'   => safe_int($row['probid']),
 			'language'  => $row['langid'],
-			'time'      => safe_float($row['submittime']),
+			'time'      => safe_float($row['submittime'],3),
 			);
 	}
 	return $res;
@@ -727,7 +745,10 @@ function submissions_POST($args)
 	$sid = submit_solution($userdata['teamid'], $probid, $cid, $args['langid'], $FILEPATHS, $FILENAMES);
 	if ( checkrole('jury') ) {
 		$results = getExpectedResults(file_get_contents($FILEPATHS[0]));
-		$DB->q('UPDATE submission SET expected_results=%s WHERE submitid=%i', json_encode($results), $sid);
+		if ( !empty($results) ) {
+			$DB->q('UPDATE submission SET expected_results=%s
+			        WHERE submitid=%i', json_encode($results), $sid);
+		}
 	}
 
 	auditlog('submission', $sid, 'added', 'via api', null, $cid);
@@ -1078,7 +1099,7 @@ function clarifications($args)
 	return array_map(function($cdata) {
 		return array(
 			'clarid'     => safe_int($cdata['clarid']),
-			'submittime' => safe_float($cdata['submittime']),
+			'submittime' => safe_float($cdata['submittime'],3),
 			'probid'     => safe_int($cdata['probid']),
 			'body'       => $cdata['body'],
 		);
@@ -1107,7 +1128,7 @@ function judgehosts($args)
 		return array(
 			'hostname' => $jdata['hostname'],
 			'active'   => safe_bool($jdata['active']),
-			'polltime' => safe_float($jdata['polltime']),
+			'polltime' => safe_float($jdata['polltime'],3),
 		);
 	}, $jdatas);
 }
@@ -1178,6 +1199,9 @@ $exArgs = array();
 $roles = array('judgehost');
 $api->provideFunction('PUT', 'judgehosts', $doc, $args, $exArgs, $roles);
 
+// Helper function used below:
+function cmp_prob_label($a, $b) { return $a['label'] > $b['label']; }
+
 /**
  * Scoreboard
  */
@@ -1212,13 +1236,16 @@ function scoreboard($args)
 		                      'total_time' => safe_int($data['total_time']));
 		$row['problems'] = array();
 		foreach ( $scoreboard['matrix'][$teamid] as $probid => $pdata ) {
-			$row['problems'][] = array('problem'     => safe_int($probid),
-			                           'label'       => $prob2label[$probid],
-			                           'num_judged'  => safe_int($pdata['num_submissions']),
-			                           'num_pending' => safe_int($pdata['num_pending']),
-			                           'time'        => safe_int($pdata['time']),
-			                           'solved'      => safe_bool($pdata['is_correct']));
+			$prob = array('label'       => $prob2label[$probid],
+			              'num_judged'  => safe_int($pdata['num_submissions']),
+			              'num_pending' => safe_int($pdata['num_pending']),
+			              'solved'      => safe_bool($pdata['is_correct']));
+
+			if ( $prob['solved'] ) $prob['time'] = safe_int($pdata['time']);
+
+			$row['problems'][] = $prob;
 		}
+		usort($row['problems'], 'cmp_prob_label');
 		$res[] = $row;
 	}
 	return $res;
