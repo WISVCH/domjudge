@@ -960,6 +960,27 @@ $optArgs = array('country' => 'ISO 3166-1 alpha-3 country code to search for.');
 $exArgs = array(array('country' => 'NLD'));
 $api->provideFunction('GET', 'affiliations', $doc, $optArgs, $exArgs);
 
+function hostname($args)
+{
+    global $DB;
+
+    $table = (isset($args['judgehost']) && $args['judgehost'] != false) ? 'judge' : 'team';
+    $ip = filter_var($_SERVER[isset($_SERVER['X-Real-IP']) ? 'X-Real-IP' : 'REMOTE_ADDR']);
+
+    $selectQuery = "SELECT id FROM hosts_$table WHERE ip_address = %s";
+    $existing = $DB->q($selectQuery, $ip)->next();
+    if (isset($existing['id'])) {
+        return (int)$existing['id'];
+    } else {
+        $DB->q("INSERT INTO hosts_$table (ip_address) VALUES (%s)", $ip);
+        return (int)$DB->q($selectQuery, $ip)->next()['id'];
+    }
+}
+$doc = 'Get or register the hostname of a judge or team host';
+$optArgs = array('judgehost' => 'Whether or not this is a judgehost or teampc (default)');
+$exArgs = array();
+$api->provideFunction('GET', 'hostname', $doc, $optArgs, $exArgs);
+
 /**
  * Get team name by ip
  */
