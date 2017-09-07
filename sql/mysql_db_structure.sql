@@ -200,6 +200,26 @@ CREATE TABLE `internal_error` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Log of judgehost internal errors';
 
 --
+-- Table structure for table `hosts_judge`
+--
+
+CREATE TABLE `hosts_judge` (
+  `id` int(4) unsigned NOT NULL AUTO_INCREMENT COMMENT 'Unique ID',
+  `ip_address` varchar(255) DEFAULT NULL COMMENT 'IP Address used to register',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Hostnames and ips of all seen judgehosts';
+
+--
+-- Table structure for table `hosts_team`
+--
+
+CREATE TABLE `hosts_team` (
+  `id` int(4) unsigned NOT NULL AUTO_INCREMENT COMMENT 'Unique ID',
+  `ip_address` varchar(255) DEFAULT NULL COMMENT 'IP Address used to register',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Hostnames and ips of all seen teamhosts';
+
+--
 -- Table structure for table `judgehost`
 --
 
