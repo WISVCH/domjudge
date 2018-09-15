@@ -12,3 +12,8 @@ services:
         arguments:
             - "%kernel.root_dir%/../../www"
             - '@service_container'
+    domjudge.user_checker:
+        class: DOMJudgeBundle\Security\UserChecker
+    gewis.ip_authenticator:
+        class: GewisBundle\Security\IpAuthenticator
+        arguments: ['@doctrine.orm.entity_manager', '@security.http_utils']

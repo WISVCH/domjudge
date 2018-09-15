@@ -29,6 +29,7 @@ security:
             provider: domjudge_db_provider
             http_basic: ~
             stateless: true
+            user_checker: domjudge.user_checker
             anonymous: ~
 
         # api only does http_basic auth
@@ -36,6 +37,7 @@ security:
             pattern: ^/feed
             provider: domjudge_db_provider
             http_basic: ~
+            user_checker: domjudge.user_checker
             stateless: true
             anonymous: ~
 
@@ -43,6 +45,8 @@ security:
         main:
             pattern: ^/
             provider: domjudge_db_provider
+            user_checker: domjudge.user_checker
+            entry_point: gewis.ip_authenticator
 
             anonymous: ~
             form_login:
@@ -56,6 +60,10 @@ security:
             logout:
                 path:   logout
                 target: /public
+            guard:
+                authenticators:
+                - gewis.ip_authenticator
+
 
     access_control:
       - { path: ^/$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
