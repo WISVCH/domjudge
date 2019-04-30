@@ -160,7 +160,7 @@ fi
 
 cd "$WORKDIR"
 
-PREFIX="/$(basename "$PWD")"
+PREFIX=$PWD
 
 # Make testing/execute dir accessible for RUNUSER:
 chmod a+x "$WORKDIR" "$WORKDIR/execdir"
@@ -217,7 +217,6 @@ exitcode=0
 # shellcheck disable=SC2153
 runcheck "$RUN_SCRIPT" $RUNARGS \
 	$GAINROOT "$RUNGUARD" ${DEBUG:+-v -V "DEBUG=$DEBUG"} ${TMPDIR:+ -V "TMPDIR=$TMPDIR"} $CPUSET_OPT \
-	-r "$PWD/.." \
 	--nproc=$PROCLIMIT \
 	--no-core --streamsize=$FILELIMIT \
 	--user="$RUNUSER" --group="$RUNGROUP" \

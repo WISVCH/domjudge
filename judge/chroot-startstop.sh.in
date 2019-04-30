@@ -53,71 +53,13 @@ dj_umount() {
 
 case "$1" in
 	check)
-		if [ ! -d "$CHROOTORIGINAL" ]; then
-			>&2 echo "chroot dir '$CHROOTORIGINAL' does not exist, run dj_make_chroot"
-			exit 2
-		fi
-		for i in $SUBDIRMOUNTS ; do
-			if [ ! -e "$CHROOTORIGINAL/$i" ]; then
-				>&2 echo "chroot subdir '$CHROOTORIGINAL/$i' not found, rerun dj_make_chroot"
-				exit 2
-			fi
-		done
-		# This directory is removed at the very end of the debootstrap run, if it's
-		# still present, building the chroot did not complete.
-		if [ -d "$CHROOTORIGINAL/debootstrap" ]; then
-			>&2 echo "chroot dir '$CHROOTORIGINAL' incomplete, rerun dj_make_chroot"
-			exit 2
-		fi
+		echo "Dummy check chroot"
 		;;
 	start)
-
-		# Mount (bind) the proc filesystem (needed by Java for /proc/self/stat):
-		mkdir -p proc
-		sudo -n mount -n --bind /proc proc < /dev/null
-
-		# shellcheck disable=SC2086
-		for i in $SUBDIRMOUNTS ; do
-
-			# Some dirs may be links to others, e.g. /lib64 -> /lib.
-			# Preserve those; bind mount the others.
-			if [ -L "$CHROOTORIGINAL/$i" ]; then
-				ln -s "$(readlink "$CHROOTORIGINAL/$i")" "$i"
-			elif [ -d "$CHROOTORIGINAL/$i" ]; then
-				mkdir -p $i
-				sudo -n mount --bind "$CHROOTORIGINAL/$i" "$i" < /dev/null
-				# Mount read-only for extra security. Note that this
-				# must be executed separately from the bind mount.
-				sudo -n mount -o remount,ro,bind "$PWD/$i" < /dev/null
-			fi
-		done
-
-		# copy dev/random and /dev/urandom as a random source
-		mkdir -p dev
-		sudo -n cp -pR /dev/random  dev < /dev/null
-		sudo -n cp -pR /dev/urandom dev < /dev/null
-		sudo -n chmod o-w dev/random dev/urandom < /dev/null
+		echo "Dummy start chroot"
 		;;
-
 	stop)
-
-		dj_umount "$PWD/proc"
-
-		rm -f dev/urandom
-		rm -f dev/random
-		rmdir dev || true
-
-		for i in $SUBDIRMOUNTS ; do
-			if [ -L "$CHROOTORIGINAL/$i" ]; then
-				rm -f $i
-			elif [ -d "$CHROOTORIGINAL/$i" ]; then
-				dj_umount "$PWD/$i"
-			fi
-		done
-# KLUDGE: We don't rmdir the empty mountpoint directories, since after
-# unmounting, we sometimes still get error messages "Device or
-# resource busy" when trying to. This seems only to occur when
-# multiple judgedaemons are run on a single host...
+		echo "Dummy stop chroot"
 		;;
 
 	*)
